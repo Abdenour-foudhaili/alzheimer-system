@@ -7,7 +7,7 @@ import { SoignantService } from './soignant.service';
 import { MessageService, ConfirmationService } from 'primeng/api';
 // import keycloak from '../keycloak'; // TEMPORARY: Disabled
 
-
+//hello
 @Component({
   selector: 'app-soignant-layout',
   standalone: true,
