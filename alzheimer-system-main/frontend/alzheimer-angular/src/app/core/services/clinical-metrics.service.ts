@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { getSessionUserId } from '../session-context';
 
 export interface ClinicalRecord {
@@ -28,7 +29,7 @@ export interface ClinicalRecord {
   providedIn: 'root'
 })
 export class ClinicalMetricsService {
-  private apiUrl = 'http://localhost:8080/api/clinical-records';
+  private readonly apiUrl = `${environment.apiUrl}/clinical-records`;
 
   constructor(private http: HttpClient) {}
 

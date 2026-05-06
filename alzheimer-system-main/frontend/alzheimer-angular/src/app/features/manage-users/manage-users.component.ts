@@ -292,7 +292,7 @@ export class ManageUsersComponent implements OnInit {
       error: (err: any) => {
         console.error('Patient API Error:', err);
         const msg = err.status === 0 
-          ? 'Cannot connect to the patient microservice. Is it running on http://localhost:8080?' 
+          ? 'Cannot connect to the patient microservice. Check that the API gateway is reachable.' 
           : `API Error: ${err.message || 'Unknown error'}`;
         this.errorMessage.set(msg);
         this.loading.set(false);

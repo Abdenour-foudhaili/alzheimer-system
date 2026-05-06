@@ -74,7 +74,7 @@ export class DoctorNotificationWsService {
     if (typeof window !== 'undefined' && window.location?.origin) {
       return `${window.location.origin}${path}`;
     }
-    return `http://localhost:8088/ws`;
+    return `http://localhost:8088${path}`;
   }
 
   disconnect(): void {
