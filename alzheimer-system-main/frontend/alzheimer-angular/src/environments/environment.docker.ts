@@ -1,4 +1,4 @@
-/** Build Angular avec --configuration=docker (image nginx + proxy vers gateway / assistance). */
+/** Déploiement derrière nginx (Docker / K8s) : URLs relatives. Utilisé par les configs build « docker » et « production ». */
 export const environment = {
   production: true,
   apiUrl: '/api',

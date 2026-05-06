@@ -16,6 +16,6 @@ spec:
       containers:
         - name: frontend
           image: YOUR_DOCKERHUB_USER/alzheimer-angular-front:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
