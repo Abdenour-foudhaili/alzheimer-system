@@ -1,6 +1,6 @@
 # CI/CD — Jenkins + SonarQube (VM Linux)
 
-Ce dépôt contient un **`Jenkinsfile`** à la racine du projet (`alzheimer-system-main/`). Il enchaîne : **tests unitaires** Maven (`mvn test`) pour le backend **Assistance quotidienne**, analyse Sonar Java (avec JaCoCo), **`npm run test:ci`** (Karma / ChromeHeadless) puis build Angular en production, puis analyse Sonar du frontend.
+Le fichier **`Jenkinsfile`** est dans le sous-dossier **`alzheimer-system-main/`** du dépôt Git (sur GitHub : à la racine du repo, puis dossier `alzheimer-system-main`). Dans Jenkins, **chemin du script** : **`alzheimer-system-main/Jenkinsfile`**. Le pipeline enchaîne : **tests unitaires** Maven (`mvn test`) pour le backend **Assistance quotidienne**, analyse Sonar Java (avec JaCoCo), **`npm run test:ci`** (Karma / ChromeHeadless) puis build Angular en production, puis analyse Sonar du frontend.
 
 ## Prérequis sur la VM
 
@@ -62,7 +62,7 @@ Vérifiez : `sonar-scanner -h`
    - URL : `http://<IP_JENKINS>:8080/sonarqube-webhook/`  
    (URL exacte indiquée dans la configuration Jenkins SonarQube.)
 
-7. **Job Pipeline** — Nouveau job → Pipeline → « Pipeline script from SCM » → Git → chemin du script : `Jenkinsfile` (racine du repo).
+7. **Job Pipeline** — Nouveau job → Pipeline → « Pipeline script from SCM » → Git → **chemin du script** : **`alzheimer-system-main/Jenkinsfile`** (adapté si tu clones uniquement le sous-dossier projet).
 
 ---
 

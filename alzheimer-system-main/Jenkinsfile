@@ -12,10 +12,11 @@ pipeline {
     nodejs 'NodeJS-20'
   }
 
+  // Chemins projet : sous-dossier alzheimer-system-main/ à la racine du dépôt Git
   environment {
     MAVEN_OPTS = '-Xmx1024m'
-    BACKEND_POM = 'backend/assistance quotidienne/pom.xml'
-    FRONTEND_DIR = 'frontend/alzheimer-angular'
+    BACKEND_POM = 'alzheimer-system-main/backend/assistance quotidienne/pom.xml'
+    FRONTEND_DIR = 'alzheimer-system-main/frontend/alzheimer-angular'
   }
 
   stages {
@@ -49,7 +50,7 @@ pipeline {
               -Dsonar.projectKey=alzheimer-assistance-quotidienne \
               -Dsonar.projectName='Assistance Quotidienne' \
               -Dsonar.java.source=17 \
-              -Dsonar.coverage.jacoco.xmlReportPaths="${WORKSPACE}/backend/assistance quotidienne/target/site/jacoco/jacoco.xml" \
+              -Dsonar.coverage.jacoco.xmlReportPaths="${WORKSPACE}/alzheimer-system-main/backend/assistance quotidienne/target/site/jacoco/jacoco.xml" \
               -B
           '''
         }
