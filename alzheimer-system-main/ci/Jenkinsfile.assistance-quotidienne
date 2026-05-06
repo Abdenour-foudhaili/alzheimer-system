@@ -1,0 +1,67 @@
+pipeline {
+  agent any
+
+  options {
+    timestamps()
+    disableConcurrentBuilds(abortPrevious: true)
+  }
+
+  tools {
+    maven 'Maven-3.9'
+    jdk 'JDK-17'
+  }
+
+  environment {
+    MAVEN_OPTS = '-Xmx1024m'
+    MODULE_POM = 'alzheimer-system-main/backend/assistance quotidienne/pom.xml'
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Assistance quotidienne — build & tests') {
+      steps {
+        sh '''
+          mvn -f "$MODULE_POM" clean verify -DskipTests=false -B
+        '''
+      }
+      post {
+        always {
+          junit allowEmptyResults: true, testResults: '**/surefire-reports/*.xml'
+        }
+      }
+    }
+
+    stage('Assistance quotidienne — SonarQube') {
+      steps {
+        withSonarQubeEnv('SonarQube') {
+          sh '''
+            mvn -f "$MODULE_POM" sonar:sonar \
+              -Dsonar.projectKey=alzheimer-assistance-quotidienne \
+              -Dsonar.projectName='Assistance Quotidienne' \
+              -Dsonar.java.source=17 \
+              -Dsonar.coverage.jacoco.xmlReportPaths="${WORKSPACE}/alzheimer-system-main/backend/assistance quotidienne/target/site/jacoco/jacoco.xml" \
+              -B
+          '''
+        }
+        timeout(time: 5, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
+      }
+    }
+  }
+
+  post {
+    failure {
+      echo 'Pipeline Assistance quotidienne échouée — voir la console et SonarQube.'
+    }
+    success {
+      echo 'Pipeline Assistance quotidienne réussie.'
+    }
+  }
+}

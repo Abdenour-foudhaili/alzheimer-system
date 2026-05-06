@@ -1,0 +1,68 @@
+pipeline {
+  agent any
+
+  options {
+    timestamps()
+    disableConcurrentBuilds(abortPrevious: true)
+  }
+
+  tools {
+    maven 'Maven-3.9'
+    jdk 'JDK-17'
+  }
+
+  environment {
+    MAVEN_OPTS = '-Xmx768m'
+    MODULE_POM = 'alzheimer-system-main/backend/discovery-server/pom.xml'
+    SONAR_PROJECT_KEY = 'alzheimer-eureka'
+    SONAR_PROJECT_NAME = 'Eureka Discovery Server'
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Eureka — compilation & tests') {
+      steps {
+        sh '''
+          mvn -f "$MODULE_POM" clean verify -DskipTests=false -B
+        '''
+      }
+      post {
+        always {
+          junit allowEmptyResults: true, testResults: '**/surefire-reports/*.xml'
+        }
+      }
+    }
+
+    stage('Eureka — SonarQube') {
+      steps {
+        withSonarQubeEnv('SonarQube') {
+          sh '''
+            mvn -f "$MODULE_POM" org.sonarsource.scanner.maven:sonar-maven-plugin:3.11.0.3922:sonar \
+              -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+              -Dsonar.projectName="$SONAR_PROJECT_NAME" \
+              -Dsonar.java.source=17 \
+              -B
+          '''
+        }
+        timeout(time: 5, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
+      }
+    }
+  }
+
+  post {
+    failure {
+      echo 'Pipeline Eureka échouée — voir la console et SonarQube.'
+    }
+    success {
+      echo 'Pipeline Eureka réussie.'
+    }
+  }
+}

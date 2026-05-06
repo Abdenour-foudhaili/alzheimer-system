@@ -1,0 +1,64 @@
+pipeline {
+  agent any
+
+  options {
+    timestamps()
+    disableConcurrentBuilds(abortPrevious: true)
+  }
+
+  tools {
+    jdk 'JDK-17'
+    nodejs 'NodeJS-20'
+  }
+
+  environment {
+    FRONTEND_DIR = 'alzheimer-system-main/frontend/alzheimer-angular'
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Frontend — install, tests & build') {
+      steps {
+        dir("${FRONTEND_DIR}") {
+          sh '''
+            npm ci
+            npm run test:ci
+            npm run build -- --configuration=production
+          '''
+        }
+      }
+    }
+
+    stage('Frontend — SonarQube') {
+      steps {
+        dir("${FRONTEND_DIR}") {
+          withSonarQubeEnv('SonarQube') {
+            sh '''
+              sonar-scanner \
+                -Dsonar.projectKey=alzheimer-angular \
+                -Dsonar.projectName='Alzheimer Angular'
+            '''
+          }
+        }
+        timeout(time: 5, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
+      }
+    }
+  }
+
+  post {
+    failure {
+      echo 'Pipeline Frontend échouée — voir la console et SonarQube.'
+    }
+    success {
+      echo 'Pipeline Frontend réussie.'
+    }
+  }
+}

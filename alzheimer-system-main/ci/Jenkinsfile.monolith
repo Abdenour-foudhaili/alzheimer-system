@@ -1,4 +1,4 @@
-// Monolithique : Assistance + frontend. Pipelines séparées : ci/Jenkinsfile.*
+// Tout-en-un Assistance + frontend. Voir Jenkinsfile.eureka, api-gateway, etc.
 pipeline {
   agent any
 

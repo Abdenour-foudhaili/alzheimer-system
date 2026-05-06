@@ -1,6 +1,17 @@
 # CI/CD — Jenkins + SonarQube (VM Linux)
 
-Le fichier **`Jenkinsfile`** est dans le sous-dossier **`alzheimer-system-main/`** du dépôt Git (sur GitHub : à la racine du repo, puis dossier `alzheimer-system-main`). Dans Jenkins, **chemin du script** : **`alzheimer-system-main/Jenkinsfile`**. Le pipeline enchaîne : **tests unitaires** Maven (`mvn test`) pour le backend **Assistance quotidienne**, analyse Sonar Java (avec JaCoCo), **`npm run test:ci`** (Karma / ChromeHeadless) puis build Angular en production, puis analyse Sonar du frontend.
+Les pipelines sont dans **`alzheimer-system-main/ci/`** (à la racine du dépôt Git : `alzheimer-system-main/ci/…`). **Recommandé** : **un job Jenkins par microservice / frontend**, chacun pointant vers **un seul** `Jenkinsfile` ci‑dessous.
+
+| Job (exemple) | Chemin du script (Script Path) | Outillage Jenkins (`tools`) | SonarQube `projectKey` |
+|---------------|-------------------------------|-----------------------------|-------------------------|
+| Eureka | `alzheimer-system-main/ci/Jenkinsfile.eureka` | JDK‑17, Maven‑3.9 | `alzheimer-eureka` |
+| API Gateway | `alzheimer-system-main/ci/Jenkinsfile.api-gateway` | JDK‑17, Maven‑3.9 | `alzheimer-api-gateway` |
+| Assistance quotidienne | `alzheimer-system-main/ci/Jenkinsfile.assistance-quotidienne` | JDK‑17, Maven‑3.9 | `alzheimer-assistance-quotidienne` (JaCoCo) |
+| Frontend Angular | `alzheimer-system-main/ci/Jenkinsfile.frontend` | JDK‑17, NodeJS‑20 | `alzheimer-angular` (`sonar-scanner`) |
+
+**Option tout‑en‑un** (sans Eureka/Gateway dans le même fichier) : `alzheimer-system-main/Jenkinsfile` ou `alzheimer-system-main/ci/Jenkinsfile.monolith` — Assistance + frontend dans une seule pipeline.
+
+Ordre **runtime** local (hors Jenkins) : démarrer **Eureka** puis les services qui s’y enregistrent (**Gateway**, **Assistance**), puis le frontend. Les pipelines CI ne démarrent pas les serveurs ; elles **compilent, testent et analysent** chaque module.
 
 ## Prérequis sur la VM
 
@@ -62,7 +73,7 @@ Vérifiez : `sonar-scanner -h`
    - URL : `http://<IP_JENKINS>:8080/sonarqube-webhook/`  
    (URL exacte indiquée dans la configuration Jenkins SonarQube.)
 
-7. **Job Pipeline** — Nouveau job → Pipeline → « Pipeline script from SCM » → Git → **chemin du script** : **`alzheimer-system-main/Jenkinsfile`** (adapté si tu clones uniquement le sous-dossier projet).
+7. **Jobs Pipeline** — Pour **chaque** ligne du tableau ci‑dessus : Nouveau item → Pipeline → « Pipeline script from SCM » → Git (URL du repo, branche `assistance-quotidienne` ou `main`) → **Script Path** = chemin indiqué (ex. **`alzheimer-system-main/ci/Jenkinsfile.eureka`**).
 
 ---
 
@@ -84,16 +95,18 @@ tools {
 
 | Composant | `projectKey` |
 |-----------|----------------|
-| Backend Maven | `alzheimer-assistance-quotidienne` |
+| Eureka | `alzheimer-eureka` |
+| API Gateway | `alzheimer-api-gateway` |
+| Assistance quotidienne | `alzheimer-assistance-quotidienne` |
 | Frontend Angular | `alzheimer-angular` |
 
-La première analyse créera les projets dans SonarQube. Les fichiers du frontend lisent aussi `frontend/alzheimer-angular/sonar-project.properties`.
+La première analyse crée chaque projet dans SonarQube. Le frontend utilise aussi `frontend/alzheimer-angular/sonar-project.properties`.
 
 ---
 
 ## Quality Gate
 
-Le pipeline appelle **`waitForQualityGate`** après **l’analyse backend uniquement**. Après l’analyse **frontend**, le webhook peut associer un autre rapport ; pour bloquer le build sur la Quality Gate Angular, créez un **second job** qui ne fait que le frontend + `waitForQualityGate`, ou fusionnez les deux en un seul projet Sonar multi-module (plus avancé).
+Chaque pipeline qui exécute Sonar appelle **`waitForQualityGate`** après son analyse (webhook SonarQube → Jenkins obligatoire). Si plusieurs builds Sonar partent **en parallèle**, gardez un délai ou séquencez les jobs pour éviter des collisions rares sur le webhook.
 
 ---
 
