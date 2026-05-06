@@ -110,7 +110,17 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "customLaunchers": {
+              "ChromeHeadlessCI": {
+                "base": "ChromeHeadless",
+                "flags": [
+                  "--no-sandbox",
+                  "--disable-dev-shm-usage",
+                  "--disable-gpu"
+                ]
+              }
+            }
           }
         }
       }

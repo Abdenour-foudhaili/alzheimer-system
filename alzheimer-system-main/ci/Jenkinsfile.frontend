@@ -42,7 +42,25 @@ pipeline {
     stage('Frontend — tests unitaires') {
       steps {
         dir("${FRONTEND_DIR}") {
-          sh 'npm run test:ci'
+          sh '''
+            set -e
+            if [ -z "${CHROME_BIN:-}" ] || [ ! -x "${CHROME_BIN}" ]; then
+              CHROME_BIN=""
+              for c in /usr/bin/google-chrome-stable /usr/bin/google-chrome \\
+                         /usr/bin/chromium /usr/bin/chromium-browser /snap/bin/chromium; do
+                if [ -x "$c" ]; then CHROME_BIN="$c"; break; fi
+              done
+              export CHROME_BIN
+            fi
+            if [ -z "${CHROME_BIN:-}" ] || [ ! -x "$CHROME_BIN" ]; then
+              echo "CHROME_BIN non défini ou inexécutable."
+              echo "Sur l agent Debian/Ubuntu : sudo apt-get install -y chromium-browser"
+              echo "(ou google-chrome-stable). Sinon définir CHROME_BIN dans le job Jenkins."
+              exit 1
+            fi
+            export CHROME_BIN
+            npm run test:ci
+          '''
         }
       }
     }
