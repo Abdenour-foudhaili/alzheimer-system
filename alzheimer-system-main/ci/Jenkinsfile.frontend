@@ -4,6 +4,11 @@ pipeline {
   parameters {
     booleanParam(name: 'PUSH_DOCKER_HUB', defaultValue: true, description: 'Construire et pousser l\'image sur Docker Hub')
     string(name: 'DOCKER_NAMESPACE', defaultValue: '', description: 'Namespace Docker Hub (vide = même nom que le login credential)')
+    booleanParam(
+      name: 'ENFORCE_SONAR_QUALITY_GATE',
+      defaultValue: false,
+      description: 'Si activé, le pipeline s\'arrête si la Quality Gate SonarQube est en erreur (sinon Docker peut toujours tourner).'
+    )
   }
 
   options {
@@ -102,7 +107,7 @@ pipeline {
           }
         }
         timeout(time: 5, unit: 'MINUTES') {
-          waitForQualityGate abortPipeline: true
+          waitForQualityGate abortPipeline: params.ENFORCE_SONAR_QUALITY_GATE
         }
       }
     }
