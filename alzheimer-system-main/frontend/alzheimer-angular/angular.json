@@ -77,6 +77,11 @@
                   "maximumError": "80kB"
                 }
               ],
+              "optimization": {
+                "fonts": {
+                  "inline": false
+                }
+              },
               "outputHashing": "all",
               "fileReplacements": [
                 {
