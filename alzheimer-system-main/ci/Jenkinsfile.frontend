@@ -20,7 +20,7 @@ pipeline {
     FRONTEND_DIR = 'alzheimer-system-main/frontend/alzheimer-angular'
     DOCKER_IMAGE_REPO = 'alzheimer-angular-front'
     DOCKERFILE_REL = 'alzheimer-system-main/frontend/alzheimer-angular/Dockerfile'
-    DOCKER_CONTEXT = 'alzheimer-system-main/frontend/alzheimer-angular'
+    DOCKER_BUILD_DIR = 'alzheimer-system-main/frontend/alzheimer-angular'
   }
 
   stages {
@@ -72,7 +72,7 @@ pipeline {
             if [ -z "\$NS" ]; then NS="\$DH_USER"; fi
             IMG="\$NS/${env.DOCKER_IMAGE_REPO}"
             echo "\$DH_PASS" | docker login -u "\$DH_USER" --password-stdin
-            docker build -f '${env.DOCKERFILE_REL}' -t "\$IMG:${env.BUILD_NUMBER}" '${env.DOCKER_CONTEXT}'
+            docker build -f '${env.DOCKERFILE_REL}' -t "\$IMG:${env.BUILD_NUMBER}" '${env.DOCKER_BUILD_DIR}'
             docker tag "\$IMG:${env.BUILD_NUMBER}" "\$IMG:latest"
             docker push "\$IMG:${env.BUILD_NUMBER}"
             docker push "\$IMG:latest"
