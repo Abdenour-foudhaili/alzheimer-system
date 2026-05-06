@@ -109,7 +109,7 @@ mvn spring-boot:run
 
 Passerelle : http://localhost:8090/api  
 
-Le gateway route tout `/api/**` vers `http://localhost:8098`.
+Le gateway route tout `/api/**` vers `http://localhost:8088`.
 
 ### 2. Frontend
 
