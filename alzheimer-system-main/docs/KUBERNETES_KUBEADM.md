@@ -159,15 +159,23 @@ kubectl get pods,svc -n alzheimer
 
 ---
 
-## 8. Stockage MySQL
+## 8. Stockage MySQL (sans StorageClass en cloud)
 
-Le PVC demande `standard` comme **StorageClass**. Si ton cluster n’en a pas :
+Sur kubeadm / VM, il n’y a souvent **aucune** StorageClass. Installe **local-path** (Rancher), puis applique le PVC :
 
 ```bash
+kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.30/deploy/local-path-storage.yaml
 kubectl get storageclass
 ```
 
-Installe un provisionneur (ex. **local-path** sur bare-metal) ou crée un PV manuel — sinon le PVC reste **Pending**.
+Le manifeste `mysql-pvc.yaml` utilise **`local-path`**. Si tu préfères une autre classe (`standard`, etc.), édite `storageClassName` dans ce fichier.
+
+Si tu avais déjà créé un PVC bloqué en Pending :
+
+```bash
+kubectl delete pvc mysql-pvc -n alzheimer --ignore-not-found
+kubectl apply -f mysql-pvc.yaml
+```
 
 ---
 

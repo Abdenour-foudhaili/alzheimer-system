@@ -23,6 +23,16 @@ Commande rapide sous Linux :
 sed -i 's/YOUR_DOCKERHUB_USER/mon-utilisateur-hub/g' *.yaml
 ```
 
+## Stockage (VM / kubeadm)
+
+Sans StorageClass cloud, installe **local-path** avant le PVC MySQL :
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.30/deploy/local-path-storage.yaml
+```
+
+Voir **§8** dans [`docs/KUBERNETES_KUBEADM.md`](../docs/KUBERNETES_KUBEADM.md).
+
 ## Ordre d’application
 
 Voir la section **§7** dans [`docs/KUBERNETES_KUBEADM.md`](../docs/KUBERNETES_KUBEADM.md).

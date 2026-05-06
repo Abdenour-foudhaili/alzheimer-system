@@ -9,4 +9,5 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: standard
+  # Après : kubectl apply -f .../local-path-storage.yaml → classe « local-path »
+  storageClassName: local-path
