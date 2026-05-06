@@ -13,6 +13,52 @@ Les pipelines sont dans **`alzheimer-system-main/ci/`** (à la racine du dépôt
 
 Ordre **runtime** local (hors Jenkins) : démarrer **Eureka** puis les services qui s’y enregistrent (**Gateway**, **Assistance**), puis le frontend. Les pipelines CI ne démarrent pas les serveurs ; elles **compilent, testent et analysent** chaque module.
 
+---
+
+## Docker Hub (images après Quality Gate)
+
+### Sur la VM Jenkins
+
+- **Docker Engine** installé et démarré (`docker ps`).
+- L’utilisateur qui exécute les builds (**souvent `jenkins`**) doit pouvoir lancer Docker :
+  - `sudo usermod -aG docker jenkins` puis **redémarrer Jenkins**,  
+  - ou agent dédié avec accès au socket Docker.
+
+### Credentials Jenkins
+
+1. **Administrer Jenkins → Credentials → (global) → Ajouter**
+2. Type **Username with password**
+3. **Username** = votre identifiant Docker Hub  
+4. **Password** = mot de passe ou **Personal Access Token** Docker Hub  
+5. **ID** = **`docker-hub`** (obligatoire : les `Jenkinsfile` utilisent cet ID)
+
+Créez sur [hub.docker.com](https://hub.docker.com) les dépôts d’images correspondants (ou laissez la première poussée les créer selon votre type de compte).
+
+### Images poussées
+
+| Pipeline | Image (`namespace/nom`) |
+|----------|-------------------------|
+| Eureka | `…/alzheimer-eureka` |
+| API Gateway | `…/alzheimer-api-gateway` |
+| Assistance quotidienne | `…/alzheimer-assistance-quotidienne` |
+| Frontend | `…/alzheimer-angular-front` |
+
+Tags : **`${BUILD_NUMBER}`** et **`latest`**. Le **namespace** est par défaut le **login** Docker Hub ; sinon renseignez le paramètre de build **`DOCKER_NAMESPACE`**.
+
+### Paramètres de build
+
+- **`PUSH_DOCKER_HUB`** (case à cocher) : décochez pour **ne pas** builder/pousser l’image (tests + Sonar uniquement).
+- **`DOCKER_NAMESPACE`** : organisation ou utilisateur Docker Hub (vide = login du credential).
+
+### Dockerfiles dans le dépôt
+
+- `backend/discovery-server/Dockerfile`
+- `backend/api-gateway/Dockerfile`
+- `backend/assistance quotidienne/Dockerfile`
+- `frontend/alzheimer-angular/Dockerfile` (+ `nginx-docker.conf`)
+
+À l’exécution des conteneurs, configurez **variables d’environnement** / réseau Docker (MySQL, URLs Eureka, etc.) selon votre infra — les images embarquent uniquement l’application packagée.
+
 ## Prérequis sur la VM
 
 - **Ubuntu Server 22.04 LTS** (ou équivalent), **4 Go RAM minimum** (8 Go recommandé si Jenkins + SonarQube sur la même VM).

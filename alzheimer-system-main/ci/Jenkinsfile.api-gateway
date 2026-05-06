@@ -1,6 +1,11 @@
 pipeline {
   agent any
 
+  parameters {
+    booleanParam(name: 'PUSH_DOCKER_HUB', defaultValue: true, description: 'Construire et pousser l\'image sur Docker Hub')
+    string(name: 'DOCKER_NAMESPACE', defaultValue: '', description: 'Namespace Docker Hub (vide = même nom que le login credential)')
+  }
+
   options {
     timestamps()
     disableConcurrentBuilds(abortPrevious: true)
@@ -16,6 +21,9 @@ pipeline {
     MODULE_POM = 'alzheimer-system-main/backend/api-gateway/pom.xml'
     SONAR_PROJECT_KEY = 'alzheimer-api-gateway'
     SONAR_PROJECT_NAME = 'API Gateway'
+    DOCKER_IMAGE_REPO = 'alzheimer-api-gateway'
+    DOCKERFILE_REL = 'alzheimer-system-main/backend/api-gateway/Dockerfile'
+    DOCKER_CONTEXT = 'alzheimer-system-main/backend/api-gateway'
   }
 
   stages {
@@ -52,6 +60,28 @@ pipeline {
         }
         timeout(time: 5, unit: 'MINUTES') {
           waitForQualityGate abortPipeline: true
+        }
+      }
+    }
+
+    stage('Docker Hub — build & push') {
+      when {
+        expression { params.PUSH_DOCKER_HUB != false }
+      }
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DH_USER', passwordVariable: 'DH_PASS')]) {
+          sh """
+            set -e
+            NS='${params.DOCKER_NAMESPACE}'
+            if [ -z "\$NS" ]; then NS="\$DH_USER"; fi
+            IMG="\$NS/${env.DOCKER_IMAGE_REPO}"
+            echo "\$DH_PASS" | docker login -u "\$DH_USER" --password-stdin
+            docker build -f '${env.DOCKERFILE_REL}' -t "\$IMG:${env.BUILD_NUMBER}" '${env.DOCKER_CONTEXT}'
+            docker tag "\$IMG:${env.BUILD_NUMBER}" "\$IMG:latest"
+            docker push "\$IMG:${env.BUILD_NUMBER}"
+            docker push "\$IMG:latest"
+            docker logout || true
+          """
         }
       }
     }

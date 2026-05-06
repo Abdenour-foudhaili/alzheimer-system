@@ -145,7 +145,7 @@ npm run test:ci
 
 Sur Linux (Jenkins / VM), installez **Chromium ou Google Chrome** pour que `ChromeHeadless` puisse démarrer.
 
-**Jenkins** : pipelines séparées dans **`ci/`** (Eureka, API Gateway, Assistance quotidienne, Frontend) — voir le tableau des **Script Path** dans [`docs/CI_CD_JENKINS.md`](docs/CI_CD_JENKINS.md). Option monolithique : **`alzheimer-system-main/Jenkinsfile`** (Assistance + frontend seulement).
+**Jenkins** : pipelines séparées dans **`ci/`** (Eureka, API Gateway, Assistance quotidienne, Frontend) — voir le tableau des **Script Path** dans [`docs/CI_CD_JENKINS.md`](docs/CI_CD_JENKINS.md). Option monolithique : **`alzheimer-system-main/Jenkinsfile`** (Assistance + frontend seulement). Après analyse Sonar, chaque pipeline peut **pousser une image sur Docker Hub** (credential Jenkins **`docker-hub`**, Docker installé sur l’agent).
 
 ---
 

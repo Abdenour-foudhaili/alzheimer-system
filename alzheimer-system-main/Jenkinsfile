@@ -2,6 +2,11 @@
 pipeline {
   agent any
 
+  parameters {
+    booleanParam(name: 'PUSH_DOCKER_HUB', defaultValue: true, description: 'Construire et pousser les images Assistance + Frontend sur Docker Hub')
+    string(name: 'DOCKER_NAMESPACE', defaultValue: '', description: 'Namespace Docker Hub (vide = même nom que le login credential)')
+  }
+
   options {
     timestamps()
     disableConcurrentBuilds(abortPrevious: true)
@@ -82,6 +87,38 @@ pipeline {
                 -Dsonar.projectName='Alzheimer Angular'
             '''
           }
+        }
+        timeout(time: 5, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
+      }
+    }
+
+    stage('Docker Hub — Assistance & Frontend') {
+      when {
+        expression { params.PUSH_DOCKER_HUB != false }
+      }
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DH_USER', passwordVariable: 'DH_PASS')]) {
+          sh """
+            set -e
+            NS='${params.DOCKER_NAMESPACE}'
+            if [ -z "\$NS" ]; then NS="\$DH_USER"; fi
+            echo "\$DH_PASS" | docker login -u "\$DH_USER" --password-stdin
+            docker build -f 'alzheimer-system-main/backend/assistance quotidienne/Dockerfile' \
+              -t "\$NS/alzheimer-assistance-quotidienne:${env.BUILD_NUMBER}" \
+              'alzheimer-system-main/backend/assistance quotidienne'
+            docker tag "\$NS/alzheimer-assistance-quotidienne:${env.BUILD_NUMBER}" "\$NS/alzheimer-assistance-quotidienne:latest"
+            docker push "\$NS/alzheimer-assistance-quotidienne:${env.BUILD_NUMBER}"
+            docker push "\$NS/alzheimer-assistance-quotidienne:latest"
+            docker build -f 'alzheimer-system-main/frontend/alzheimer-angular/Dockerfile' \
+              -t "\$NS/alzheimer-angular-front:${env.BUILD_NUMBER}" \
+              'alzheimer-system-main/frontend/alzheimer-angular'
+            docker tag "\$NS/alzheimer-angular-front:${env.BUILD_NUMBER}" "\$NS/alzheimer-angular-front:latest"
+            docker push "\$NS/alzheimer-angular-front:${env.BUILD_NUMBER}"
+            docker push "\$NS/alzheimer-angular-front:latest"
+            docker logout || true
+          """
         }
       }
     }
