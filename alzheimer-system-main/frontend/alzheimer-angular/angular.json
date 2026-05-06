@@ -90,6 +90,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "karmaConfig": "karma.conf.js",
             "polyfills": [
               "zone.js",
               "zone.js/testing",
@@ -110,17 +111,7 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [],
-            "customLaunchers": {
-              "ChromeHeadlessCI": {
-                "base": "ChromeHeadless",
-                "flags": [
-                  "--no-sandbox",
-                  "--disable-dev-shm-usage",
-                  "--disable-gpu"
-                ]
-              }
-            }
+            "scripts": []
           }
         }
       }
