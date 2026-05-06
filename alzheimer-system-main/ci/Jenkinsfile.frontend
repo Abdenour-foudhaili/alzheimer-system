@@ -44,18 +44,35 @@ pipeline {
         dir("${FRONTEND_DIR}") {
           sh '''
             set -e
+            # Chromium installé via Snap échoue sous jenkins.service :
+            # "is not a snap cgroup for tag snap.chromium.chromium"
+            skip_snap_launcher() {
+              p="$1"
+              case "$p" in /snap/bin/*) return 0 ;; esac
+              rl="$(readlink -f "$p" 2>/dev/null || true)"
+              echo "$rl" | grep -q '/snap/' && return 0
+              [ ! -f "$p" ] && return 1
+              head -c 12288 "$p" 2>/dev/null | grep -qE 'snap run chromium|snap.chromium' && return 0
+              return 1
+            }
             if [ -z "${CHROME_BIN:-}" ] || [ ! -x "${CHROME_BIN}" ]; then
               CHROME_BIN=""
               for c in /usr/bin/google-chrome-stable /usr/bin/google-chrome \\
-                         /usr/bin/chromium /usr/bin/chromium-browser /snap/bin/chromium; do
-                if [ -x "$c" ]; then CHROME_BIN="$c"; break; fi
+                         /opt/google/chrome/google-chrome \\
+                         /usr/bin/chromium /usr/bin/chromium-browser; do
+                [ ! -x "$c" ] && continue
+                skip_snap_launcher "$c" && continue
+                CHROME_BIN="$c"
+                break
               done
               export CHROME_BIN
             fi
             if [ -z "${CHROME_BIN:-}" ] || [ ! -x "$CHROME_BIN" ]; then
-              echo "CHROME_BIN non défini ou inexécutable."
-              echo "Sur l agent Debian/Ubuntu : sudo apt-get install -y chromium-browser"
-              echo "(ou google-chrome-stable). Sinon définir CHROME_BIN dans le job Jenkins."
+              echo "Aucun Chrome/Chromium utilisable (hors Snap) trouvé pour Karma."
+              echo "Sur la VM Jenkins, installe Google Chrome en .deb (recommandé) :"
+              echo "  wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+              echo "  sudo apt-get install -y ./google-chrome-stable_current_amd64.deb"
+              echo "Ou définis CHROME_BIN vers /usr/bin/google-chrome-stable dans le job."
               exit 1
             fi
             export CHROME_BIN
