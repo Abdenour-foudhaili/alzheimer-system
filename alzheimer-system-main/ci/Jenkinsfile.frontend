@@ -95,7 +95,7 @@ pipeline {
         dir("${FRONTEND_DIR}") {
           withSonarQubeEnv('SonarQube') {
             sh '''
-              sonar-scanner \
+              ./node_modules/.bin/sonar-scanner \
                 -Dsonar.projectKey=alzheimer-angular \
                 -Dsonar.projectName='Alzheimer Angular'
             '''
