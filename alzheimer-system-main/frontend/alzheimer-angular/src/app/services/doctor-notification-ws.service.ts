@@ -26,8 +26,7 @@ export class DoctorNotificationWsService {
   connect(): void {
     if (this.client?.active) return;
 
-    // Connect directly to assistance-quotidienne service (port 8098) for WebSocket
-    const wsUrl = 'http://localhost:8098/ws';
+    const wsUrl = this.resolveSockJsUrl();
     console.log('🔌 Connexion WebSocket à:', wsUrl);
 
     this.client = new Client({
@@ -64,6 +63,18 @@ export class DoctorNotificationWsService {
     };
 
     this.client.activate();
+  }
+
+  private resolveSockJsUrl(): string {
+    const u = environment.sockJsWsUrl;
+    if (u.startsWith('http://') || u.startsWith('https://')) {
+      return u;
+    }
+    const path = u.startsWith('/') ? u : `/${u}`;
+    if (typeof window !== 'undefined' && window.location?.origin) {
+      return `${window.location.origin}${path}`;
+    }
+    return `http://localhost:8088/ws`;
   }
 
   disconnect(): void {

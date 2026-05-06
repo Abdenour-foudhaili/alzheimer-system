@@ -1,6 +1,7 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8090/api'  // API Gateway port
+  apiUrl: 'http://localhost:8090/api',
+  sockJsWsUrl: 'http://localhost:8088/ws',
 };
 
 export const environmentProd = {

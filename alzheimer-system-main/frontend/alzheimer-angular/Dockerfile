@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN npm run build -- --configuration=production
+RUN npm run build -- --configuration=docker
 
 FROM nginx:alpine
 COPY nginx-docker.conf /etc/nginx/conf.d/default.conf

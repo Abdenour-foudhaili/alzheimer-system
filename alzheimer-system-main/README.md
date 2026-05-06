@@ -31,7 +31,7 @@ graph TD
 
 - **API Gateway**: Entry point for routing and CORS (`localhost:8090`).
 - **Discovery Server (Eureka)**: Service registry (`localhost:8761`).
-- **Assistance Quotidienne**: Main REST API (`localhost:8098`).
+- **Assistance Quotidienne**: Main REST API (`localhost:8088`).
 - **Frontend**: Angular (`localhost:4200`).
 
 ---
@@ -98,7 +98,7 @@ cd "backend/assistance quotidienne"
 mvn spring-boot:run
 ```
 
-API directe : http://localhost:8098/api  
+API directe : http://localhost:8088/api  
 
 **Terminal 3 — API Gateway**
 
@@ -123,7 +123,34 @@ Ouvrir http://localhost:4200
 
 `environment.ts` utilise `http://localhost:8090/api`.
 
-Les WebSockets médecin pointent déjà vers `http://localhost:8098/ws`.
+Les WebSockets médecin pointent vers `http://localhost:8088/ws` en dev local.
+
+---
+
+## Docker sur une VM (stack complète)
+
+À la racine du dossier **`alzheimer-system-main`** :
+
+```bash
+cp .env.example .env   # ajuster MYSQL_ROOT_PASSWORD si besoin
+docker compose up -d --build
+```
+
+Services exposés sur la VM :
+
+| Service | URL / port |
+|--------|------------|
+| **Frontend** (nginx + Angular build `docker`) | `http://<IP_VM>` (port 80 par défaut) |
+| **API Gateway** | `http://<IP_VM>:8090` |
+| **Assistance** (direct) | `http://<IP_VM>:8088` |
+| **Eureka** | `http://<IP_VM>:8761` |
+| **MySQL** | `<IP_VM>:3306` |
+
+Le front utilise des URLs relatives **`/api`** et **`/ws`** ; nginx du conteneur `frontend` proxifie vers **gateway** et **assistance**.
+
+Profils Spring **`docker`** : Eureka à `http://eureka:8761/eureka`, MySQL à `mysql:3306`. En **premier déploiement**, `ddl-auto=update` est activé dans ce profil pour créer les tables (à durcir pour la prod).
+
+Arrêt : `docker compose down` (données MySQL conservées dans le volume `mysql_data`).
 
 ---
 
