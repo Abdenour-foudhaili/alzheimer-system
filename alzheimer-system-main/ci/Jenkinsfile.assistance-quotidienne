@@ -32,10 +32,19 @@ pipeline {
       }
     }
 
-    stage('Assistance quotidienne — build & tests') {
+    stage('Assistance quotidienne — compilation') {
       steps {
         sh '''
-          mvn -f "$MODULE_POM" clean verify -DskipTests=false -B
+          mvn -f "$MODULE_POM" clean compile -B
+        '''
+      }
+    }
+
+    stage('Assistance quotidienne — tests unitaires') {
+      steps {
+        sh '''
+          mvn -f "$MODULE_POM" test -B
+          mvn -f "$MODULE_POM" jacoco:report -B
         '''
       }
       post {
@@ -45,11 +54,19 @@ pipeline {
       }
     }
 
+    stage('Assistance quotidienne — package') {
+      steps {
+        sh '''
+          mvn -f "$MODULE_POM" package -DskipTests -B
+        '''
+      }
+    }
+
     stage('Assistance quotidienne — SonarQube') {
       steps {
         withSonarQubeEnv('SonarQube') {
           sh '''
-            mvn -f "$MODULE_POM" sonar:sonar \
+            mvn -f "$MODULE_POM" org.sonarsource.scanner.maven:sonar-maven-plugin:3.11.0.3922:sonar \
               -Dsonar.projectKey=alzheimer-assistance-quotidienne \
               -Dsonar.projectName='Assistance Quotidienne' \
               -Dsonar.java.source=17 \

@@ -31,14 +31,26 @@ pipeline {
       }
     }
 
-    stage('Frontend — install, tests & build') {
+    stage('Frontend — dépendances (npm ci)') {
       steps {
         dir("${FRONTEND_DIR}") {
-          sh '''
-            npm ci
-            npm run test:ci
-            npm run build -- --configuration=production
-          '''
+          sh 'npm ci'
+        }
+      }
+    }
+
+    stage('Frontend — tests unitaires') {
+      steps {
+        dir("${FRONTEND_DIR}") {
+          sh 'npm run test:ci'
+        }
+      }
+    }
+
+    stage('Frontend — build production') {
+      steps {
+        dir("${FRONTEND_DIR}") {
+          sh 'npm run build -- --configuration=production'
         }
       }
     }
