@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assistance
+  namespace: alzheimer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: assistance
+  template:
+    metadata:
+      labels:
+        app: assistance
+    spec:
+      containers:
+        - name: assistance
+          image: YOUR_DOCKERHUB_USER/alzheimer-assistance-quotidienne:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8088
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_PASSWORD

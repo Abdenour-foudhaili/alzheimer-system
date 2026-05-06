@@ -152,6 +152,10 @@ Profils Spring **`docker`** : Eureka à `http://eureka:8761/eureka`, MySQL à `m
 
 Arrêt : `docker compose down` (données MySQL conservées dans le volume `mysql_data`).
 
+### Kubernetes (kubeadm)
+
+Installation du cluster et déploiement des pods : **[`docs/KUBERNETES_KUBEADM.md`](docs/KUBERNETES_KUBEADM.md)** — manifestes dans **`k8s/`**.
+
 ---
 
 ## Tests unitaires (TU)
