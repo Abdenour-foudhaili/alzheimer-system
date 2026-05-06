@@ -21,7 +21,7 @@ public class RapportRequest {
     // ── Report type ──
 
     @NotBlank(message = "Le type de rapport est requis.")
-    @Pattern(regexp = "HEBDOMADAIRE|MENSUEL|MEDICAL|PERSONNALISE",
+    @Pattern(regexp = "HEBDOMADAIRE|MENSUEL|MEDICAL|PERSONNALISE|QUOTIDIEN",
              message = "Type de rapport invalide.")
     private String typeRapport;
     // ── DTO pour un traitement (médicament) ──

@@ -39,5 +39,8 @@ export class SoignantNotificationsPageComponent implements OnInit {
     });
   }
 
-  logout(): void { import('../../keycloak').then(m => m.default.logout({ redirectUri: window.location.origin })); }
+  logout(): void {
+    sessionStorage.clear();
+    this.router.navigate(['/']);
+  }
 }

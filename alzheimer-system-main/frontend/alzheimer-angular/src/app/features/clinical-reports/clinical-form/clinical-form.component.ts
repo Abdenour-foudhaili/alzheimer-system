@@ -14,7 +14,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatientService, PatientProfile } from '../../../core/services/patient.service';
 import { ClinicalMetricsService } from '../../../core/services/clinical-metrics.service';
-import keycloak from '../../../keycloak';
+import { getSessionUserId } from '../../../core/session-context';
 
 @Component({
   selector: 'app-clinical-form',
@@ -383,7 +383,7 @@ export class ClinicalFormComponent implements OnInit {
     firstName: '',
     lastName: '',
     age: 0,
-    keycloakId: keycloak.subject || '',
+    sessionUserId: getSessionUserId(),
     physicalActivity: 5,
     dietQuality: 5,
     sleepQuality: 5
@@ -443,7 +443,7 @@ export class ClinicalFormComponent implements OnInit {
       },
       error: (err) => {
         if (this.profile.firstName === '') {
-            this.profile.firstName = keycloak.idTokenParsed?.['given_name'] || 'User';
+            this.profile.firstName = this.profile.firstName || 'User';
         }
       }
     });
@@ -493,7 +493,7 @@ export class ClinicalFormComponent implements OnInit {
     const report: any = {
         ...this.profile,
         patientId: this.profile.id,
-        recordedBy: (keycloak.idTokenParsed as any)?.['preferred_username'] || 'Patient'
+        recordedBy: this.profile.firstName || 'Patient'
     };
 
     this.clinicalService.create(report).subscribe({

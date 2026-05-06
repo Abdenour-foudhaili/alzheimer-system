@@ -8,7 +8,6 @@ import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { NotificationBellComponent } from '../shared/components/notification-bell/notification-bell.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import localeFr from '@angular/common/locales/fr';
-import keycloak from '../keycloak';
 import { FormValidator, ValidationErrors, sanitizeObject } from '../shared/validation.utils';
 
 registerLocaleData(localeFr, 'fr-FR');
@@ -22,7 +21,7 @@ registerLocaleData(localeFr, 'fr-FR');
 })
 export class DoctorAppointmentsComponent implements OnInit {
 
-    userName = keycloak.tokenParsed?.['name'] || keycloak.tokenParsed?.['preferred_username'] || 'Médecin';
+    userName = 'Médecin';
 
     currentDate: Date = new Date();
     selectedDate: Date | null = null;
@@ -375,7 +374,8 @@ export class DoctorAppointmentsComponent implements OnInit {
     }
 
     logout(): void {
-        import('../keycloak').then(m => m.default.logout({ redirectUri: window.location.origin }));
+        sessionStorage.clear();
+        this.router.navigate(['/']);
     }
 
     selectDate(day: any): void {

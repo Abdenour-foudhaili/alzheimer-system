@@ -13,7 +13,6 @@ import { MedicalRecordService } from '../services/medical-record.service';
 import { TreatmentService } from '../services/treatment.service';
 import { RapportService, Rapport } from '../services/rapport.service';
 import { TranslateModule } from '@ngx-translate/core';
-import keycloak from '../keycloak';
 import { FormValidator, ValidationErrors, sanitizeObject } from '../shared/validation.utils';
 
 @Component({
@@ -25,7 +24,7 @@ import { FormValidator, ValidationErrors, sanitizeObject } from '../shared/valid
 })
 export class DoctorPatientsComponent implements OnInit {
 
-    userName = keycloak.tokenParsed?.['name'] || keycloak.tokenParsed?.['preferred_username'] || 'Médecin';
+    userName = 'Médecin';
 
     patients: Patient[] = [];
     filteredPatients: Patient[] = [];
@@ -343,7 +342,8 @@ export class DoctorPatientsComponent implements OnInit {
     }
 
     logout(): void {
-        import('../keycloak').then(m => m.default.logout({ redirectUri: window.location.origin }));
+        sessionStorage.clear();
+        this.router.navigate(['/']);
     }
 
     // Opens/closes the add patient dialog

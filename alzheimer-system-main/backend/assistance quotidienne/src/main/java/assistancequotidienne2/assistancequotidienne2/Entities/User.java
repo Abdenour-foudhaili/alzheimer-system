@@ -1,6 +1,7 @@
 package assistancequotidienne2.assistancequotidienne2.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,8 @@ public class User {
 
     private String nom;
     private String email;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String mot_de_passe;
     
     @Enumerated(EnumType.STRING)

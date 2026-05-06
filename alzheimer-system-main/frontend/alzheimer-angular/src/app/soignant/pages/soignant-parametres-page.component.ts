@@ -24,5 +24,8 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class SoignantParametresPageComponent {
   constructor(private router: Router) {}
-  logout(): void { import('../../keycloak').then(m => m.default.logout({ redirectUri: window.location.origin })); }
+  logout(): void {
+    sessionStorage.clear();
+    this.router.navigate(['/']);
+  }
 }

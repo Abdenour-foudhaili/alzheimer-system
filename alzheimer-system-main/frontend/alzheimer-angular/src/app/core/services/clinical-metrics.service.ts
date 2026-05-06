@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import keycloak from '../../keycloak';
+import { getSessionUserId } from '../session-context';
 
 export interface ClinicalRecord {
   id?: number;
@@ -34,7 +34,7 @@ export class ClinicalMetricsService {
 
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
-      'X-User-Id': keycloak.subject || ''
+      'X-User-Id': getSessionUserId()
     });
   }
 

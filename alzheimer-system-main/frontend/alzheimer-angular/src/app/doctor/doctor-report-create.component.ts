@@ -10,7 +10,6 @@ import { EvenementAgendaApiService } from '../services/evenement-agenda-api.serv
 import { TraitementPrescrit, MomentPrise } from '../models/rapport-suivi-structure.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
-import keycloak from '../keycloak';
 import { sanitizeInput, FormValidator, ValidationErrors } from '../shared/validation.utils';
 
 interface PatientOption {
@@ -30,7 +29,7 @@ export class DoctorReportCreateComponent implements OnInit {
   patients: PatientOption[] = [];
 
   selectedPatient: PatientOption | null = null;
-  medecinNom = keycloak.tokenParsed?.['name'] || keycloak.tokenParsed?.['preferred_username'] || 'Médecin';
+  medecinNom = 'Médecin';
 
   /** Période du suivi hebdomadaire (7 jours) — format YYYY-MM-DD pour input date */
   dateDebut: string;
@@ -479,6 +478,7 @@ export class DoctorReportCreateComponent implements OnInit {
   }
 
   logout(): void {
-    import('../keycloak').then(m => m.default.logout({ redirectUri: window.location.origin }));
+    sessionStorage.clear();
+    this.router.navigate(['/']);
   }
 }

@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { MessageService, ConfirmationService } from 'primeng/api';
-// import keycloak from '../keycloak'; // TEMPORARY: Disabled
 
 @Component({
   selector: 'app-aidant-layout',
@@ -15,5 +14,5 @@ import { MessageService, ConfirmationService } from 'primeng/api';
   styleUrls: ['./aidant-layout.component.css']
 })
 export class AidantLayoutComponent {
-  aidantName = 'Aidant'; // TEMPORARY: Hardcoded since Keycloak is disabled
+  aidantName = 'Aidant';
 }

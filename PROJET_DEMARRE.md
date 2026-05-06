@@ -10,7 +10,7 @@
 | **API Gateway** | 8090 | ✅ Running | http://localhost:8090 |
 | **Assistance Quotidienne** | 8098 | ✅ Running | http://localhost:8098 |
 | **RabbitMQ** | 5672, 15672 | ✅ Running | http://localhost:15672 |
-| **Keycloak** | 8081 | ✅ Running | http://localhost:8081 |
+| **MySQL** | 3307→3306 | ✅ Healthy | (interne Docker ; accès hôte : `localhost:3307`) |
 
 ### Frontend Angular
 
@@ -22,7 +22,7 @@
 
 | Service | Port | Statut | URL |
 |---------|------|--------|-----|
-| **MySQL (XAMPP)** | 3306 | ✅ Running | http://localhost/phpmyadmin |
+| **MySQL** | 3307 (hôte) | ✅ | Base `assistancequotidiennedb` (conteneur `mysql-assistance`) |
 
 ---
 
@@ -40,10 +40,9 @@
 - **Assistance Quotidienne**: http://localhost:8098/api
 - **Eureka Dashboard**: http://localhost:8761
 - **RabbitMQ Management**: http://localhost:15672 (guest/guest)
-- **Keycloak Admin Console**: http://localhost:8081 (admin/admin)
 
 ### Base de Données
-- **phpMyAdmin**: http://localhost/phpmyadmin
+- **MySQL (Docker)** : `localhost:3307`, utilisateur `root`, mot de passe vide
 - **Base de données**: `assistancequotidiennedb`
 
 ---
@@ -55,15 +54,13 @@
 2. API Gateway - Port 8090
 3. Assistance Quotidienne - Port 8098
 4. RabbitMQ - Ports 5672, 15672
-5. Keycloak - Port 8081
+5. MySQL - Port 3307 (hôte) / 3306 (réseau Docker)
 6. Angular Dev Server - Port 4200
-7. MySQL (XAMPP) - Port 3306
 
 ### 🔧 Configuration
 - **Backend**: Docker containers
 - **Frontend**: npm start (dev mode)
-- **Base de données**: XAMPP MySQL
-- **Connexion DB**: `host.docker.internal:3306`
+- **Base de données**: MySQL dans Docker (`mysql` sur le réseau compose)
 
 ---
 
@@ -133,7 +130,6 @@ npm start
 
 ### Fonctionnalités Supprimées
 - ❌ Mémoire Assistée (supprimée complètement)
-- ⚠️ Keycloak (démarré mais guards désactivés en mode bypass)
 
 ### Scheduler Actif
 - **Rapports Hebdomadaires**: Génération automatique chaque minute (mode test)
@@ -170,9 +166,8 @@ Le terminal où `npm start` tourne affiche les logs en temps réel.
 - [x] API Gateway démarré (port 8090)
 - [x] Assistance Quotidienne démarré (port 8098)
 - [x] RabbitMQ démarré (ports 5672, 15672)
-- [x] Keycloak démarré (port 8081)
 - [x] Angular démarré (port 4200)
-- [x] MySQL XAMPP actif (port 3306)
+- [x] MySQL Docker actif (port hôte 3307)
 - [x] Base de données `assistancequotidiennedb` existe
 - [x] Mémoire Assistée supprimée
 

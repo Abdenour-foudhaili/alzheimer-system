@@ -7,8 +7,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SoignantService } from '../soignant/soignant.service';
 import { User } from '../models/user.model';
 import { PatientService, Patient } from '../services/patient.service';
-import keycloak from '../keycloak';
-
 @Component({
   selector: 'app-doctor-dashboard-simple',
   standalone: true,
@@ -19,7 +17,7 @@ import keycloak from '../keycloak';
 export class DoctorDashboardSimpleComponent implements OnInit {
   currentDate = new Date();
   availableCaregivers: User[] = [];
-  userName = keycloak.tokenParsed?.['name'] || keycloak.tokenParsed?.['preferred_username'] || 'Médecin';
+  userName = 'Médecin';
 
   // Chart Data (Mock)
   activityChart = [
@@ -177,6 +175,7 @@ export class DoctorDashboardSimpleComponent implements OnInit {
   }
 
   logout(): void {
-    import('../keycloak').then(m => m.default.logout({ redirectUri: window.location.origin }));
+    sessionStorage.clear();
+    this.router.navigate(['/']);
   }
 }

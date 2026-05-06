@@ -10,8 +10,6 @@ import { RapportMedical, StatutDirective } from '../models/rapport-medical.model
 import { NotificationTache } from '../models/notification-tache.model';
 import { RapportHebdomadaire } from '../models/rapport-hebdo.model';
 import { EvenementAgenda, StatutAgenda } from '../models/agenda.model';
-import keycloak from '../keycloak';
-
 @Component({
   selector: 'app-soignant-dashboard',
   standalone: true,
@@ -20,7 +18,7 @@ import keycloak from '../keycloak';
   styleUrls: ['./soignant-dashboard.component.css'],
 })
 export class SoignantDashboardComponent implements OnInit, OnDestroy {
-  soignantName = keycloak.tokenParsed?.['name'] || keycloak.tokenParsed?.['preferred_username'] || 'Soignant';
+  soignantName = 'Soignant';
   alertes: Alerte[] = [];
   patients: PatientSoignant[] = [];
   stats: {
@@ -182,6 +180,7 @@ export class SoignantDashboardComponent implements OnInit, OnDestroy {
 
 
   logout(): void {
-    import('../keycloak').then(m => m.default.logout({ redirectUri: window.location.origin }));
+    sessionStorage.clear();
+    this.router.navigate(['/']);
   }
 }

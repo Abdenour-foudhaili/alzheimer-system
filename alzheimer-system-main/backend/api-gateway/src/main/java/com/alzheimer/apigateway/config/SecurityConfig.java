@@ -16,7 +16,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        // TEMPORARY: Security disabled for testing without Keycloak
+        // Security désactivée (pas de validation JWT en gateway pour cet environnement).
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -25,7 +25,7 @@ public class SecurityConfig {
                 )
                 .build();
         
-        /* ORIGINAL CODE (with OAuth2):
+        /* Exemple OAuth2 resource server (JWT) si vous rebranchez un fournisseur d’identité :
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -58,7 +58,7 @@ public class SecurityConfig {
             "Access-Control-Request-Headers", 
             "x-user-id", 
             "X-User-Id"
-        ));
+        )); 
         corsConfig.setAllowCredentials(true);
         corsConfig.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
 

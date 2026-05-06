@@ -8,7 +8,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class CorsConfig {
 
-    // TEMPORARY: Security disabled for testing without Keycloak
+    // Sécurité HTTP désactivée pour cet environnement (pas de JWT obligatoire).
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

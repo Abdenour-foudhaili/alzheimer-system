@@ -8,8 +8,6 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { Router } from '@angular/router';
 import { ClinicalMetricsService, ClinicalRecord } from '../../../core/services/clinical-metrics.service';
-import keycloak from '../../../keycloak';
-
 @Component({
   selector: 'app-report-list',
   standalone: true,
@@ -468,7 +466,7 @@ export class ReportListComponent implements OnInit {
   }
 
   checkUserRole() {
-    this.isPatient = keycloak.hasRealmRole('patient') || keycloak.hasResourceRole('patient');
+    this.isPatient = false;
   }
 
   loadRecords() {

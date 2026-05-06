@@ -8,7 +8,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { PatientService, PatientProfile } from '../../core/services/patient.service';
-import keycloak from '../../keycloak';
+import { getSessionUserId } from '../../core/session-context';
 
 @Component({
   selector: 'app-profile',
@@ -43,8 +43,8 @@ import keycloak from '../../keycloak';
             </div>
 
             <div class="field">
-              <label>Account ID (Read-only)</label>
-              <input pInputText [disabled]="true" [value]="profile.keycloakId" class="opacity-50" />
+              <label>Session ID (read-only)</label>
+              <input pInputText [disabled]="true" [value]="profile.sessionUserId" class="opacity-50" />
             </div>
           </div>
 
@@ -57,8 +57,8 @@ import keycloak from '../../keycloak';
           <div class="security-info">
              <i class="pi pi-shield security-icon"></i>
              <div class="info-text">
-                <h3>Account Managed by Keycloak</h3>
-                <p>Your password and authentication are securely managed by the central authentication system.</p>
+                <h3>Local session</h3>
+                <p>No centralized identity provider is configured in this build; use HTTPS and network controls in production.</p>
              </div>
           </div>
         </p-card>
@@ -158,7 +158,7 @@ import keycloak from '../../keycloak';
 })
 export class ProfileComponent implements OnInit {
   profile: PatientProfile = {
-    keycloakId: keycloak.subject || '',
+    sessionUserId: getSessionUserId(),
     firstName: '',
     lastName: '',
     age: 0
@@ -180,10 +180,7 @@ export class ProfileComponent implements OnInit {
         if (data) {
           this.profile = data;
         } else {
-          // Initialize with Keycloak data if first time
-          const token = keycloak.tokenParsed as any;
-          this.profile.firstName = token?.given_name || '';
-          this.profile.lastName = token?.family_name || '';
+          this.profile.sessionUserId = getSessionUserId();
         }
       },
       error: (err) => {

@@ -1,0 +1,98 @@
+pipeline {
+  agent any
+
+  options {
+    timestamps()
+    disableConcurrentBuilds(abortPrevious: true)
+  }
+
+  tools {
+    maven 'Maven-3.9'
+    jdk 'JDK-17'
+    nodejs 'NodeJS-20'
+  }
+
+  environment {
+    MAVEN_OPTS = '-Xmx1024m'
+    BACKEND_POM = 'backend/assistance quotidienne/pom.xml'
+    FRONTEND_DIR = 'frontend/alzheimer-angular'
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Backend — build & tests') {
+      steps {
+        sh '''
+          mvn -f "$BACKEND_POM" clean verify \
+            -DskipTests=false \
+            -B
+        '''
+      }
+      post {
+        always {
+          junit allowEmptyResults: true, testResults: '**/surefire-reports/*.xml'
+        }
+      }
+    }
+
+    stage('Backend — SonarQube') {
+      steps {
+        withSonarQubeEnv('SonarQube') {
+          sh '''
+            mvn -f "$BACKEND_POM" sonar:sonar \
+              -Dsonar.projectKey=alzheimer-assistance-quotidienne \
+              -Dsonar.projectName='Assistance Quotidienne' \
+              -Dsonar.java.source=17 \
+              -Dsonar.coverage.jacoco.xmlReportPaths="${WORKSPACE}/backend/assistance quotidienne/target/site/jacoco/jacoco.xml" \
+              -B
+          '''
+        }
+        timeout(time: 5, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
+      }
+    }
+
+    stage('Frontend — install & build') {
+      steps {
+        dir("${FRONTEND_DIR}") {
+          sh '''
+            npm ci
+            npm run test:ci
+            npm run build -- --configuration=production
+          '''
+        }
+      }
+    }
+
+    stage('Frontend — SonarQube') {
+      steps {
+        dir("${FRONTEND_DIR}") {
+          withSonarQubeEnv('SonarQube') {
+            sh '''
+              sonar-scanner \
+                -Dsonar.projectKey=alzheimer-angular \
+                -Dsonar.projectName='Alzheimer Angular'
+            '''
+          }
+        }
+      }
+    }
+
+  }
+
+  post {
+    failure {
+      echo 'Pipeline failed — vérifiez les logs et la Quality Gate SonarQube.'
+    }
+    success {
+      echo 'Pipeline réussi.'
+    }
+  }
+}

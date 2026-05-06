@@ -13,7 +13,6 @@ export class AppComponent {
   constructor(private translate: TranslateService) {
     console.log('🚀 AppComponent initialized');
     translate.addLangs(['fr', 'en']);
-    translate.setDefaultLang('fr');
     const savedLang = localStorage.getItem('lang');
     translate.use(savedLang === 'en' ? 'en' : 'fr');
     console.log('✅ Translation service configured');

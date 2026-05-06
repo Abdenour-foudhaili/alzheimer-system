@@ -1,5 +1,6 @@
 package assistancequotidienne2.assistancequotidienne2.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -14,16 +15,19 @@ public class Notification {
     /** Destinataire (mÃ©decin ou soignant) */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "destinataire_id")
+    @JsonIgnoreProperties({"patient", "rendezVous", "rapports"})
     private User destinataire;
 
     /** ExpÃ©diteur (soignant ou mÃ©decin) */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "expediteur_id")
+    @JsonIgnoreProperties({"patient", "rendezVous", "rapports"})
     private User expediteur;
 
     /** Patient concernÃ© */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_id")
+    @JsonIgnoreProperties({"rendezVous", "rapports", "user", "emergencyContacts"})
     private Patient patient;
 
     private String type; // FICHE_TRANSMISSION, RAPPORT, ALERTE, etc.

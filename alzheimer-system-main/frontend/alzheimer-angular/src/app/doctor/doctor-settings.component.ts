@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { NotificationBellComponent } from '../shared/components/notification-bell/notification-bell.component';
-import keycloak from '../keycloak';
 
 @Component({
     selector: 'app-doctor-settings',
@@ -15,7 +14,7 @@ import keycloak from '../keycloak';
 })
 export class DoctorSettingsComponent {
 
-    userName = keycloak.tokenParsed?.['name'] || keycloak.tokenParsed?.['preferred_username'] || 'Médecin';
+    userName = 'Médecin';
 
     constructor(private router: Router, private translate: TranslateService) {
         this.userInfo.specialization = this.translate.instant('DOCTOR.SPECIALIZATION_GERIATRICS');
@@ -44,6 +43,7 @@ export class DoctorSettingsComponent {
     };
 
     logout(): void {
-        import('../keycloak').then(m => m.default.logout({ redirectUri: window.location.origin }));
+        sessionStorage.clear();
+        this.router.navigate(['/']);
     }
 }

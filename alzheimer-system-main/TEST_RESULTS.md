@@ -149,7 +149,6 @@ L'application est prête pour une utilisation en production avec XAMPP MySQL.
 - **Service Assistance Quotidienne**: http://localhost:8098
 - **Eureka Discovery**: http://localhost:8761
 - **RabbitMQ Management**: http://localhost:15672
-- **Keycloak**: http://localhost:8081
 
 ## Base de Données
 

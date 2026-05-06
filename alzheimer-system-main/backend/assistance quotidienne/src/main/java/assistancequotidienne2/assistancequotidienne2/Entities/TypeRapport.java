@@ -4,5 +4,7 @@ public enum TypeRapport {
     HEBDOMADAIRE,
     MENSUEL,
     MEDICAL,
-    PERSONNALISE
+    PERSONNALISE,
+    /** Ancienne valeur en base / ancien front — conservée pour lecture Hibernate */
+    QUOTIDIEN
 }

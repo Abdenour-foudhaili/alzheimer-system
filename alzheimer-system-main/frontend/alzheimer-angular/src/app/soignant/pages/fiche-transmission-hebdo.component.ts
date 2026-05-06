@@ -301,7 +301,8 @@ export class FicheTransmissionHebdoComponent implements OnInit {
   }
 
   logout(): void {
-    import('../../keycloak').then(m => m.default.logout({ redirectUri: window.location.origin }));
+    sessionStorage.clear();
+    this.router.navigate(['/']);
   }
 
   getStatutClass(statut: StatutDirectiveSuivi): string {

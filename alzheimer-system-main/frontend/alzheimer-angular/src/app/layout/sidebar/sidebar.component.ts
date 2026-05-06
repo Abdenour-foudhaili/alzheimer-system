@@ -1,7 +1,6 @@
 import { Component, EventEmitter, HostBinding, Output, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import keycloak from '../../keycloak';
 
 interface NavItem {
   label: string;
@@ -39,7 +38,8 @@ export class SidebarComponent {
   constructor(private router: Router) {}
 
   onLogout(): void {
-    import('../../keycloak').then(m => m.default.logout());
+    sessionStorage.clear();
+    this.router.navigate(['/']);
   }
 
   toggle(): void {

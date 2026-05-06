@@ -16,7 +16,6 @@ import { DoctorNotificationWsService, DoctorNotificationMessage } from '../servi
 import { InsightService, Insight } from '../services/insight.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
-import keycloak from '../keycloak';
 
 @Component({
     selector: 'app-doctor-reports',
@@ -27,7 +26,7 @@ import keycloak from '../keycloak';
 })
 export class DoctorReportsComponent implements OnInit, OnDestroy {
 
-    userName = keycloak.tokenParsed?.['name'] || keycloak.tokenParsed?.['preferred_username'] || 'Médecin';
+    userName = 'Médecin';
 
     // Data from API
     rapports: Rapport[] = [];
@@ -384,7 +383,8 @@ export class DoctorReportsComponent implements OnInit, OnDestroy {
     }
 
     logout(): void {
-        import('../keycloak').then(m => m.default.logout({ redirectUri: window.location.origin }));
+        sessionStorage.clear();
+        this.router.navigate(['/']);
     }
 
     downloadReport(id: number): void {

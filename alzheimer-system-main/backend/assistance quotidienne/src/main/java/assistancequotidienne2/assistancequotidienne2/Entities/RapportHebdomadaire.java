@@ -1,5 +1,7 @@
 package assistancequotidienne2.assistancequotidienne2.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,12 +16,14 @@ public class RapportHebdomadaire {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_id")
+    @JsonIgnoreProperties({"rendezVous", "rapports", "user", "emergencyContacts"})
     private Patient patient;
 
     private String patientNom;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "soignant_id")
+    @JsonIgnoreProperties({"patient", "rendezVous", "rapports"})
     private User soignant;
 
     @Column(name = "date_debut")

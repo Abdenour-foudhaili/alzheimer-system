@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -18,12 +18,11 @@ import { authInterceptor } from './auth.interceptor';
     AppRoutingModule,
     BrowserAnimationsModule,
     TranslateModule.forRoot({
-      defaultLanguage: 'fr',
+      fallbackLang: 'fr',
       loader: { provide: TranslateLoader, useClass: TranslateHttpLoader }
     })
   ],
   providers: [
-    provideClientHydration(),
     provideHttpClient(withInterceptors([authInterceptor])),
     { provide: TRANSLATE_HTTP_LOADER_CONFIG, useValue: { prefix: './assets/i18n/' } }
   ],

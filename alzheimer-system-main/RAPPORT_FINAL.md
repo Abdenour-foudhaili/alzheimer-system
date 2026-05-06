@@ -181,7 +181,6 @@ Tous les endpoints sont accessibles via l'API Gateway (port 8090):
 - ✅ XAMPP MySQL: Port 3306
 - ✅ Eureka Discovery: Port 8761
 - ✅ RabbitMQ: Port 5672/15672
-- ✅ Keycloak: Port 8081
 
 ### 🚀 Prêt pour la Production
 L'application est maintenant:
@@ -194,9 +193,9 @@ L'application est maintenant:
 ## 📌 Notes Importantes
 
 1. **Base de données unique**: Toutes les données sont dans `assistancequotidiennedb`
-2. **Pas de Keycloak requis**: Authentification désactivée pour les tests
+2. **Authentification**: aucun fournisseur IAM central dans ce dépôt ; sécurité désactivée pour les tests
 3. **XAMPP requis**: MySQL doit être démarré sur XAMPP
-4. **Tous les services Docker actifs**: Sauf MySQL (utilise XAMPP)
+4. **Backends en local (Maven)** : discovery-server, assistance-quotidienne, api-gateway ; MySQL (ex. XAMPP)
 
 ## 🔗 Accès Rapides
 

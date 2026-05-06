@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
-import keycloak from '../keycloak';
 import { FormValidator, ValidationErrors, sanitizeInput } from '../shared/validation.utils';
 
 // ── Interfaces ──────────────────────────────────────────────────────────────
@@ -86,7 +85,7 @@ export interface FormulaireRendezVous {
 export class MedicalAgendaComponent implements OnInit {
 
   // ─── Médecin connecté ────────────────────────────────────────────────
-  medecinNom = keycloak.tokenParsed?.['name'] || keycloak.tokenParsed?.['preferred_username'] || 'Médecin';
+  medecinNom = 'Médecin';
   medecinId = 'med-001';
 
   // ─── Navigation & vues ──────────────────────────────────────────────
@@ -885,6 +884,7 @@ export class MedicalAgendaComponent implements OnInit {
   }
 
   logout(): void {
-    import('../keycloak').then(m => m.default.logout({ redirectUri: window.location.origin }));
+    sessionStorage.clear();
+    this.router.navigate(['/']);
   }
 }

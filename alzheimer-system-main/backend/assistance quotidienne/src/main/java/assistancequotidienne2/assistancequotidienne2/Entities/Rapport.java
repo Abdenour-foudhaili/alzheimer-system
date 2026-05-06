@@ -15,7 +15,7 @@ public class Rapport {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_id")
-    @JsonIgnoreProperties({"traitements", "rendezVous", "rappels", "rapports", "user"})
+    @JsonIgnoreProperties({"traitements", "rendezVous", "rappels", "rapports", "user", "emergencyContacts"})
     private Patient patient;
 
     @ManyToOne(fetch = FetchType.EAGER)

@@ -1,7 +1,6 @@
 import { Component, input, HostBinding } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import keycloak from '../../keycloak';
 import { ViewChild } from '@angular/core';
 import { UserCreateDialogComponent } from '../../features/manage-users/user-create-dialog/user-create-dialog.component';
 

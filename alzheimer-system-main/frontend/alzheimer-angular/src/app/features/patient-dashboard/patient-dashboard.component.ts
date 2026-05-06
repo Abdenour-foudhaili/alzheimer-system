@@ -8,7 +8,7 @@ import { ToastModule } from 'primeng/toast';
 import { TableModule } from 'primeng/table';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ChartModule } from 'primeng/chart';
-import keycloak from '../../keycloak';
+import { getSessionUserId } from '../../core/session-context';
 import { CognitiveService, ActivityResponse } from '../../services/cognitive.service';
 
 @Component({
@@ -69,7 +69,7 @@ export class PatientDashboardComponent implements OnInit {
   }
 
   loadHistory() {
-    const patientId = keycloak.subject;
+    const patientId = getSessionUserId();
     if (patientId) {
       this.cognitiveService.getPatientActivities(patientId).subscribe({
         next: (data) => {
@@ -349,7 +349,7 @@ export class PatientDashboardComponent implements OnInit {
     else if (gameType === 'memory') { score = this.finalMemoryLevel; }
     else if (gameType === 'verbal') { score = this.verbalScore; }
     
-    const patientId = keycloak.subject || 'unknown';
+    const patientId = getSessionUserId();
     this.cognitiveService.saveActivity({
       patientId,
       gameType,

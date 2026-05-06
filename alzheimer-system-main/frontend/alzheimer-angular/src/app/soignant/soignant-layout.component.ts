@@ -5,9 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { SoignantService } from './soignant.service';
 import { MessageService, ConfirmationService } from 'primeng/api';
-// import keycloak from '../keycloak'; // TEMPORARY: Disabled
 
-//hello
 @Component({
   selector: 'app-soignant-layout',
   standalone: true,
@@ -17,7 +15,7 @@ import { MessageService, ConfirmationService } from 'primeng/api';
   styleUrls: ['./soignant-layout.component.css']
 })
 export class SoignantLayoutComponent implements OnInit {
-  soignantName = 'Soignant'; // TEMPORARY: Hardcoded since Keycloak is disabled
+  soignantName = 'Soignant';
   alertesNonTraiteesCount = 0;
   rapportsNonLusCount = 0;
   rapportHebdoNonEnvoye = false;

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import keycloak from '../../keycloak';
+import { getSessionUserId } from '../session-context';
 
 export interface PatientProfile {
   id?: number;
-  keycloakId: string;
+  /** Identifiant corrélé côté client (session navigateur). */
+  sessionUserId: string;
   firstName: string;
   lastName: string;
   age: number;
@@ -36,7 +37,7 @@ export class PatientService {
 
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
-      'X-User-Id': keycloak.subject || ''
+      'X-User-Id': getSessionUserId()
     });
   }
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { RapportHebdomadaire } from '../../models/rapport-hebdo.model';
 import { RapportHebdomadaireApiService } from '../../services/rapport-hebdomadaire-api.service';
@@ -17,6 +17,7 @@ import { PatientSoignant } from '../../models/patient-soignant.model';
 export class SoignantRapportsHebdoPageComponent implements OnInit {
   private rapportHebdoApi = inject(RapportHebdomadaireApiService);
   private soignantService = inject(SoignantService);
+  private router = inject(Router);
 
   rapports: RapportHebdomadaire[] = [];
   rapportsToSend: RapportHebdomadaire[] = [];
@@ -132,8 +133,9 @@ export class SoignantRapportsHebdoPageComponent implements OnInit {
     this.selectedRapport = null;
   }
 
-  logout(): void { 
-    import('../../keycloak').then(m => m.default.logout({ redirectUri: window.location.origin })); 
+  logout(): void {
+    sessionStorage.clear();
+    this.router.navigate(['/']);
   }
 }
 
