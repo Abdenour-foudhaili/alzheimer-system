@@ -24,6 +24,19 @@ public class PatientController {
     // CREATE
     @PostMapping
     public ResponseEntity<Patient> create(@RequestBody Patient patient) {
+        patient.setId(null);
+        patient.setUser(null);
+        patient.setRendezVous(null);
+        patient.setRapports(null);
+        patient.setEmergencyContacts(null);
+
+        User soignantRef = patient.getSoignant();
+        if (soignantRef != null && soignantRef.getId() != null) {
+            patient.setSoignant(userRepository.findById(soignantRef.getId()).orElse(null));
+        } else {
+            patient.setSoignant(null);
+        }
+
         if (patient.getActif() == null) {
             patient.setActif(true);
         }
