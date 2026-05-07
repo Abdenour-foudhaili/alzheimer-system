@@ -1,3 +1,4 @@
+# Remplacez YOUR_DOCKERHUB_USER par votre login Docker Hub avant apply (sinon InvalidImageName / ImagePullBackOff).
 apiVersion: apps/v1
 kind: Deployment
 metadata:

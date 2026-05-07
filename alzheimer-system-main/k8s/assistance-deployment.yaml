@@ -16,7 +16,7 @@ spec:
       containers:
         - name: assistance
           image: YOUR_DOCKERHUB_USER/alzheimer-assistance-quotidienne:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8088
           env:
